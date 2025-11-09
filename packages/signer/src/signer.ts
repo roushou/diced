@@ -22,14 +22,7 @@ export type HeaderPayload = {
 /**
  * HTTP methods supported for signing
  */
-export type Method =
-  | "GET"
-  | "POST"
-  | "PUT"
-  | "DELETE"
-  | "PATCH"
-  | "HEAD"
-  | "OPTIONS";
+export type Method = "GET" | "POST" | "DELETE";
 
 /**
  * Signer class for creating HMAC-SHA256 signatures for API authentication

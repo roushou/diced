@@ -12,15 +12,7 @@ const signer = new Signer({
 
 const SignSchema = v.object({
   path: v.pipe(v.string(), v.nonEmpty()),
-  method: v.union([
-    v.literal("GET"),
-    v.literal("POST"),
-    v.literal("PUT"),
-    v.literal("DELETE"),
-    v.literal("PATCH"),
-    v.literal("HEAD"),
-    v.literal("OPTIONS"),
-  ]),
+  method: v.union([v.literal("GET"), v.literal("POST"), v.literal("DELETE")]),
   body: v.optional(v.string()),
   timestamp: v.optional(v.number()),
 });

@@ -120,7 +120,7 @@ describe("Signer", () => {
       const signer = new Signer(testCredentials);
       const timestamp = 1234567890;
       const path = "/api/test";
-      const methods: Method[] = ["GET", "POST", "PUT", "DELETE", "PATCH"];
+      const methods: Method[] = ["GET", "POST", "DELETE"];
 
       const signatures = methods.map(
         (method) =>
