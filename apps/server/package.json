@@ -8,6 +8,7 @@
     "dev": "bun --hot run ./src/app.ts"
   },
   "dependencies": {
+    "@polys/signer": "workspace:*",
     "valibot": "^1.1.0"
   }
 }

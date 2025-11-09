@@ -16,6 +16,7 @@
       "name": "@polys/server",
       "version": "0.1.0",
       "dependencies": {
+        "@polys/signer": "workspace:*",
         "valibot": "^1.1.0",
       },
     },

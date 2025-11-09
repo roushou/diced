@@ -1,7 +1,14 @@
 import * as v from "valibot";
+import { Signer } from "@polys/signer";
+
 import { config } from "./config";
 import { withAuth } from "./middleware/auth";
 
+const signer = new Signer({
+  key: config.polymarket.apiKey,
+  secret: config.polymarket.secret,
+  passphrase: config.polymarket.passphrase,
+});
 
 const SignSchema = v.object({
   path: v.pipe(v.string(), v.nonEmpty()),
@@ -39,7 +46,6 @@ const server = Bun.serve({
     },
 
     "/api/sign": {
-        return Response.json({ message: "ok", token });
       POST: withAuth((req, _token) => {
         const validation = v.safeParse(SignSchema, req.body);
         if (!validation.success) {
@@ -47,6 +53,14 @@ const server = Bun.serve({
         }
 
         const { method, path, body, timestamp } = validation.output;
+        const payload = signer.createHeaderPayload({
+          method,
+          path,
+          body,
+          timestamp,
+        });
+
+        return Response.json(payload, { status: 200 });
       }),
     },
   },
