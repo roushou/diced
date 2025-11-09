@@ -10,14 +10,14 @@ export class AccountRequests {
     tokenId: string,
     address: string,
   ): Promise<BalanceAllowanceResponse> {
-    return this.client.request<BalanceAllowanceResponse>(
-      "GET",
-      `/balance-allowance`,
-      {
+    return this.client.request<BalanceAllowanceResponse>({
+      method: "GET",
+      path: "/balance-allowance",
+      auth: { kind: "l2" },
+      options: {
         params: { token_id: tokenId, address },
-        requiresAuth: true,
       },
-    );
+    });
   }
 }
 

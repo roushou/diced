@@ -11,8 +11,13 @@ export class PricingRequests {
     tokenId: string,
     side: "BUY" | "SELL",
   ): Promise<PriceResponse> {
-    return this.client.request<PriceResponse>("GET", `/price`, {
-      params: { token_id: tokenId, side },
+    return this.client.request<PriceResponse>({
+      method: "GET",
+      path: "/price",
+      auth: { kind: "none" },
+      options: {
+        params: { token_id: tokenId, side },
+      },
     });
   }
 
@@ -23,11 +28,16 @@ export class PricingRequests {
     params: { tokenId: string; side: OrderSide }[],
   ): Promise<PriceResponse> {
     // TODO: use correct type
-    return this.client.request<PriceResponse>("POST", `/prices`, {
-      body: params.map((param) => ({
-        token_id: param.tokenId,
-        side: param.side,
-      })),
+    return this.client.request<PriceResponse>({
+      method: "POST",
+      path: "/prices",
+      auth: { kind: "none" },
+      options: {
+        body: params.map((param) => ({
+          token_id: param.tokenId,
+          side: param.side,
+        })),
+      },
     });
   }
 
@@ -35,8 +45,13 @@ export class PricingRequests {
    * Get midpoint price for a specific token
    */
   async getMidpoint(tokenId: string): Promise<MidpointResponse> {
-    return this.client.request<MidpointResponse>("GET", `/midpoint`, {
-      params: { token_id: tokenId },
+    return this.client.request<MidpointResponse>({
+      method: "GET",
+      path: "/midpoint",
+      auth: { kind: "none" },
+      options: {
+        params: { token_id: tokenId },
+      },
     });
   }
 }

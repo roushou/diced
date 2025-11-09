@@ -8,8 +8,13 @@ export class BookRequests {
    * Get order book for a specific token
    */
   async getOrderBook(tokenId: string): Promise<OrderBookSummary> {
-    return this.client.request<OrderBookSummary>("GET", `/book`, {
-      params: { token_id: tokenId },
+    return this.client.request<OrderBookSummary>({
+      method: "GET",
+      path: "/book",
+      auth: { kind: "none" },
+      options: {
+        params: { token_id: tokenId },
+      },
     });
   }
 
@@ -19,11 +24,16 @@ export class BookRequests {
   async getOrderBooks(
     params: { tokenId: string; side: OrderSide }[],
   ): Promise<OrderBookSummary[]> {
-    return this.client.request<OrderBookSummary[]>("POST", `/books`, {
-      body: params.map((param) => ({
-        token_id: param.tokenId,
-        side: param.side,
-      })),
+    return this.client.request<OrderBookSummary[]>({
+      method: "POST",
+      path: "/books",
+      auth: { kind: "none" },
+      options: {
+        body: params.map((param) => ({
+          token_id: param.tokenId,
+          side: param.side,
+        })),
+      },
     });
   }
 
@@ -31,8 +41,13 @@ export class BookRequests {
    * Get ticker information for a token
    */
   async getTicker(tokenId: string): Promise<TickerResponse> {
-    return this.client.request<TickerResponse>("GET", `/ticker`, {
-      params: { token_id: tokenId },
+    return this.client.request<TickerResponse>({
+      method: "GET",
+      path: "/ticker",
+      auth: { kind: "none" },
+      options: {
+        params: { token_id: tokenId },
+      },
     });
   }
 
@@ -40,15 +55,24 @@ export class BookRequests {
    * Get market information by condition ID
    */
   async getMarket(conditionId: string): Promise<Market> {
-    return this.client.request<Market>("GET", `/markets/${conditionId}`);
+    return this.client.request<Market>({
+      method: "GET",
+      path: `/markets/${conditionId}`,
+      auth: { kind: "none" },
+    });
   }
 
   /**
    * Get all available markets (paginated)
    */
   async getMarkets(nextCursor?: string): Promise<MarketsResponse> {
-    return this.client.request<MarketsResponse>("GET", `/markets`, {
-      params: { next_cursor: nextCursor },
+    return this.client.request<MarketsResponse>({
+      method: "GET",
+      path: "/markets",
+      auth: { kind: "none" },
+      options: {
+        params: { next_cursor: nextCursor },
+      },
     });
   }
 

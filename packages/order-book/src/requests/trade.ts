@@ -5,21 +5,26 @@ export class TradeRequests {
   constructor(private readonly client: BaseClient) {}
 
   /**
-   * Get trades with optional filters
+   * List trades
    */
-  async getTrades(params?: GetTradesParams): Promise<TradesResponse> {
-    return this.client.request<TradesResponse>("GET", `/trades`, { params });
+  async listTrades(params?: ListTradesParams): Promise<TradesResponse> {
+    return this.client.request<TradesResponse>({
+      method: "GET",
+      path: "/trades",
+      auth: { kind: "none" },
+      options: { params },
+    });
   }
 
   /**
-   * Get all trades for a market
+   * List all trades for a market
    */
-  async getAllTrades(market: string): Promise<Trade[]> {
+  async listAllTrades(market: string): Promise<Trade[]> {
     const trades: Trade[] = [];
     let nextCursor: string | undefined;
 
     do {
-      const response = await this.getTrades({
+      const response = await this.listTrades({
         market,
         next_cursor: nextCursor,
       });
@@ -52,7 +57,7 @@ export type Trade = {
   type?: string;
 };
 
-export type GetTradesParams = {
+export type ListTradesParams = {
   market?: string;
   maker_address?: string;
   asset_id?: string;

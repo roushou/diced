@@ -7,18 +7,30 @@ export class OrderRequests {
    * Get an order by ID
    */
   async getOrder(id: string): Promise<Order> {
-    return this.client.request<Order>("GET", `/order/${id}`, {
-      requiresAuth: true,
+    return this.client.request<Order>({
+      method: "GET",
+      path: `/data/order/${id}`,
+      auth: {
+        kind: "l2",
+      },
     });
   }
 
   /**
-   * Get all orders
+   * List active orders for a given market
    */
-  async getOrders(market?: string): Promise<Order[]> {
-    return this.client.request<Order[]>("GET", `/orders`, {
-      params: { market },
-      requiresAuth: true,
+  async listOrders(params: ListOrderParams): Promise<Order[]> {
+    return this.client.request<Order[]>({
+      method: "GET",
+      path: "/data/orders",
+      auth: { kind: "l2" },
+      options: {
+        params: {
+          id: params?.assetId,
+          market: params?.marketId,
+          asset: params?.assetId,
+        },
+      },
     });
   }
 
@@ -26,9 +38,13 @@ export class OrderRequests {
    * Check if an order is eligible or scoring for Rewards purposes
    */
   async checkOrderRewardScoring(id: string): Promise<Order[]> {
-    return this.client.request<Order[]>("GET", `/order-scoring`, {
-      params: { order_id: id },
-      requiresAuth: true,
+    return this.client.request<Order[]>({
+      method: "GET",
+      path: "/order-scoring",
+      auth: { kind: "l2" },
+      options: {
+        params: { order_id: id },
+      },
     });
   }
 
@@ -36,9 +52,13 @@ export class OrderRequests {
    * Create an order
    */
   async createOrder(params: CreateOrderParams): Promise<SignedOrder> {
-    return this.client.request<SignedOrder>("POST", `/order`, {
-      body: params,
-      requiresAuth: true,
+    return this.client.request<SignedOrder>({
+      method: "POST",
+      path: "/order",
+      auth: { kind: "l2" },
+      options: {
+        body: params,
+      },
     });
   }
 
@@ -46,9 +66,13 @@ export class OrderRequests {
    * Post an order to the order book
    */
   async postOrder(order: SignedOrder): Promise<OrderResponse> {
-    return this.client.request<OrderResponse>("POST", `/order`, {
-      body: order,
-      requiresAuth: true,
+    return this.client.request<OrderResponse>({
+      method: "POST",
+      path: "/order",
+      auth: { kind: "l2" },
+      options: {
+        body: order,
+      },
     });
   }
 
@@ -63,29 +87,38 @@ export class OrderRequests {
   /**
    * Cancel an order
    */
-  async cancel(orderHash: string): Promise<CancelResponse> {
-    return this.client.request<CancelResponse>("DELETE", `/order`, {
-      body: { orderID: orderHash },
-      requiresAuth: true,
+  async cancelOrder(id: string): Promise<CancelResponse> {
+    return this.client.request<CancelResponse>({
+      method: "DELETE",
+      path: "/order",
+      auth: { kind: "l2" },
+      options: {
+        body: { orderID: id },
+      },
     });
   }
 
   /**
    * Cancel multiple orders
    */
-  async cancelMultiple(orderHashes: string[]): Promise<CancelResponse> {
-    return this.client.request<CancelResponse>("DELETE", `/orders`, {
-      body: orderHashes,
-      requiresAuth: true,
+  async cancelOrders(_orderIds: string[]): Promise<CancelResponse> {
+    return this.client.request<CancelResponse>({
+      method: "DELETE",
+      path: "/orders",
+      auth: { kind: "l2" },
     });
   }
 
   /**
    * Cancel all orders
    */
-  async cancelAll(): Promise<CancelResponse> {
-    return this.client.request<CancelResponse>("DELETE", `/orders`, {
-      requiresAuth: true,
+  async cancelAllOrders(): Promise<CancelResponse> {
+    return this.client.request<CancelResponse>({
+      method: "DELETE",
+      path: "/cancel-all",
+      auth: {
+        kind: "l2",
+      },
     });
   }
 }
@@ -136,6 +169,12 @@ export type SignedOrder = {
   feeRateBps: string;
   signatureType: number;
   signature: string;
+};
+
+export type ListOrderParams = {
+  orderId?: string;
+  marketId: string;
+  assetId?: string;
 };
 
 export type CreateOrderParams = {

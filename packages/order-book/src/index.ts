@@ -1,3 +1,9 @@
+export type {
+  L1HeaderPayload,
+  L2HeaderArgs,
+  L2HeaderPayload,
+} from "./auth/headers.ts";
+export { createL1Headers, createL2Headers } from "./auth/headers.ts";
 export type { ClientConfig } from "./base-client.ts";
 export { OrderBookClient } from "./client.ts";
 export {
@@ -21,6 +27,7 @@ export type {
 export type {
   CancelResponse,
   CreateOrderParams,
+  ListOrderParams,
   Order,
   OrderResponse,
   OrderSide,
@@ -29,7 +36,7 @@ export type {
 } from "./requests/order.ts";
 export type { MidpointResponse, PriceResponse } from "./requests/pricing.ts";
 export type {
-  GetTradesParams,
+  ListTradesParams,
   Trade,
   TradesResponse,
 } from "./requests/trade.ts";

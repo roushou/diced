@@ -1,5 +1,6 @@
-import { type Credentials, Signer } from "@polys/signer";
+import type { ConnectedWalletClient, Credentials } from "@polys/signer";
 import ky, { type HTTPError, type KyInstance, type Options } from "ky";
+import { createL1Headers, createL2Headers } from "./auth/headers.ts";
 import {
   ApiError,
   AuthenticationError,
@@ -13,34 +14,57 @@ const DEFAULT_BASE_URL = "https://clob.polymarket.com";
 const DEFAULT_TIMEOUT_MS = 30000;
 const DEFAULT_MAX_RETRIES = 3;
 
+type AuthRequirement =
+  | { kind: "none" }
+  | { kind: "l1"; nonce: number; timestamp?: number }
+  | { kind: "l2" };
+
+/**
+ * Configuration for the CLOB client
+ */
 export type ClientConfig = {
+  /** Wallet to use for L1 authentication */
+  wallet: ConnectedWalletClient;
+
+  /** L2 API credentials (key, secret, passphrase) */
+  credentials: Credentials;
+
+  /** Base URL for the CLOB API */
   baseUrl?: string;
-  credentials?: Credentials;
+
+  /** Request timeout in milliseconds */
   timeoutMs?: number;
+
+  /** Maximum number of retries for failed requests */
   maxRetries?: number;
+
+  /** Enable debug logging */
   debug?: boolean;
 };
 
-/**
- * Base client for making HTTP requests to the CLOB API
- */
 export class BaseClient {
-  protected readonly signer?: Signer;
+  protected readonly wallet: ConnectedWalletClient;
+  protected readonly credentials: Credentials;
   protected readonly debug: boolean;
+
   private readonly api: KyInstance;
 
-  constructor(config: ClientConfig = {}) {
-    this.debug = config.debug ?? false;
-
-    if (config.credentials) {
-      this.signer = new Signer(config.credentials);
-    }
-
+  constructor({
+    wallet,
+    credentials,
+    baseUrl = DEFAULT_BASE_URL,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    maxRetries = DEFAULT_MAX_RETRIES,
+    debug = false,
+  }: ClientConfig) {
+    this.wallet = wallet;
+    this.credentials = credentials;
+    this.debug = debug;
     this.api = ky.create({
-      prefixUrl: config.baseUrl ?? DEFAULT_BASE_URL,
-      timeout: config.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+      prefixUrl: baseUrl,
+      timeout: timeoutMs,
       retry: {
-        limit: config.maxRetries ?? DEFAULT_MAX_RETRIES,
+        limit: maxRetries,
         methods: ["get", "post", "delete"],
         statusCodes: [408, 413, 429, 500, 502, 503, 504],
         backoffLimit: 10000,
@@ -78,58 +102,72 @@ export class BaseClient {
 
   /**
    * Make an authenticated or unauthenticated HTTP request
+   *
+   * @param method - HTTP method (GET, POST, DELETE)
+   * @param path - Request path
+   * @param options - Request options including auth type, body, and params
+   * @returns Response data
    */
-  public async request<T>(
-    method: "GET" | "POST" | "DELETE",
-    path: string,
-    options: {
+  public async request<T>({
+    method,
+    path,
+    auth,
+    options = {},
+  }: {
+    method: "GET" | "POST" | "DELETE";
+    path: `/${string}`;
+    auth: AuthRequirement;
+    options?: {
       body?: unknown;
       params?: Record<string, string | number | boolean | undefined>;
-      requiresAuth?: boolean;
-    } = {},
-  ): Promise<T> {
-    const { body, params, requiresAuth = false } = options;
-
-    if (requiresAuth && !this.signer) {
-      throw new AuthenticationError(
-        "Authentication required but no credentials provided",
-      );
-    }
+    };
+  }): Promise<T> {
+    const { body, params } = options;
 
     // Prepare headers
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
-    // Add authentication headers if required
-    if (requiresAuth && this.signer) {
-      // Build search params for signature
-      const searchParams = new URLSearchParams();
-      if (params) {
-        for (const [key, value] of Object.entries(params)) {
-          if (value !== undefined) {
-            searchParams.append(key, String(value));
-          }
+    // Build full path with query params for signature
+    const searchParams = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined) {
+          searchParams.append(key, String(value));
         }
       }
-      const search = searchParams.toString();
-      const fullPath = search ? `${path}?${search}` : path;
+    }
+    const search = searchParams.toString();
+    const fullPath = search ? `${path}?${search}` : path;
 
-      const bodyString = body ? JSON.stringify(body) : undefined;
-      const payload = this.signer.createHeaderPayload({
-        method,
-        path: fullPath,
-        body: bodyString,
-        timestamp: undefined,
+    // Add authentication headers based on auth type
+    // auth === "none" requires no additional headers
+    if (auth.kind === "l1") {
+      // L1 authentication (EIP-712 wallet signature)
+      const l1Headers = await createL1Headers({
+        signer: this.wallet,
+        nonce: BigInt(auth.nonce),
+        timestamp: auth.timestamp,
       });
 
-      headers["POLY-ADDRESS"] = payload.key;
-      headers["POLY-SIGNATURE"] = payload.signature;
-      headers["POLY-TIMESTAMP"] = String(payload.timestamp);
-      headers["POLY-PASSPHRASE"] = payload.passphrase;
+      Object.assign(headers, l1Headers);
+    }
+    if (auth.kind === "l2") {
+      // L2 authentication (HMAC signature with API keys)
+      const l2Headers = createL2Headers({
+        address: this.wallet.account?.address,
+        credentials: this.credentials,
+        headerArgs: {
+          method,
+          requestPath: fullPath,
+          body: JSON.stringify(body),
+        },
+      });
+
+      Object.assign(headers, l2Headers);
     }
 
-    // Prepare Ky options
     const kyOptions: Options = {
       method: method.toLowerCase() as Lowercase<typeof method>,
       headers,

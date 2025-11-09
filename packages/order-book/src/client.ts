@@ -47,7 +47,7 @@ export class OrderBookClient extends BaseClient {
 
   public readonly account: AccountRequests;
 
-  constructor(config: ClientConfig = {}) {
+  constructor(config: ClientConfig) {
     super(config);
 
     this.book = new BookRequests(this);

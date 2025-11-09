@@ -37,6 +37,7 @@
   ],
   "dependencies": {
     "@polys/signer": "workspace:*",
-    "ky": "^1.14.0"
+    "ky": "^1.14.0",
+    "viem": "^2.38.6"
   }
 }
