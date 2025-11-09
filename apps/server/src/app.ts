@@ -1,4 +1,5 @@
 import { config } from "./config";
+import { withAuth } from "./middleware/auth";
 
 const server = Bun.serve({
   hostname: config.server.hostname,
@@ -21,24 +22,9 @@ const server = Bun.serve({
     },
 
     "/api/sign": {
-      POST: (req) => {
-        const authorization = req.headers.get("Authorization");
-        if (!authorization) {
-          return new Response("unauthorized", { status: 401 });
-        }
-
-        const parts = authorization.split(" ");
-        if (parts.length !== 2 || parts[0] !== "Bearer") {
-          return new Response("unauthorized", { status: 401 });
-        }
-
-        const token = parts[1];
-        if (!token) {
-          return new Response("unauthorized", { status: 401 });
-        }
-
+      POST: withAuth((_req, token) => {
         return Response.json({ message: "ok", token });
-      },
+      }),
     },
   },
 
