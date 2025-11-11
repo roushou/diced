@@ -1,4 +1,4 @@
-import type { OrderSide } from "./requests/order.ts";
+import type { OrderSide } from "./api/order.ts";
 
 export function roundTo(
   num: number,
