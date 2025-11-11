@@ -33,7 +33,7 @@ export class AuthRequests {
   /**
    * Derive an existing API key for an address and nonce
    */
-  async deriveApiKey(nonce: number): Promise<string> {
+  async deriveApiKey(nonce: number): Promise<Credentials> {
     const response = await this.client.request<{
       apiKey: string;
       secret: string;
@@ -46,7 +46,11 @@ export class AuthRequests {
         nonce,
       },
     });
-    return response.apiKey;
+    return {
+      key: response.apiKey,
+      secret: response.secret,
+      passphrase: response.passphrase,
+    };
   }
 
   /**
