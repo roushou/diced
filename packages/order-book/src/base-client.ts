@@ -17,7 +17,7 @@ const DEFAULT_MAX_RETRIES = 3;
 type AuthRequirement =
   | { kind: "none" }
   | { kind: "l1"; nonce: number; timestamp?: number }
-  | { kind: "l2" };
+  | { kind: "l2"; headerArgs?: unknown };
 
 /**
  * Configuration for the CLOB client
@@ -158,8 +158,11 @@ export class BaseClient {
         credentials: this.credentials,
         headerArgs: {
           method,
-          body: JSON.stringify(body),
           requestPath: path,
+          body:
+            auth.headerArgs !== undefined
+              ? JSON.stringify(auth.headerArgs)
+              : undefined,
         },
       });
 
