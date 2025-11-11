@@ -17,13 +17,15 @@ export {
 } from "./errors.ts";
 export type { BalanceAllowanceResponse } from "./requests/account.ts";
 export type {
-  Market,
-  MarketsResponse,
-  MarketToken,
   OrderBookSummary,
   OrderLevel,
   TickerResponse,
 } from "./requests/book.ts";
+export type {
+  ListMarketsResponse,
+  Market,
+  MarketToken,
+} from "./requests/market.ts";
 export type {
   CancelResponse,
   CreateOrderParams,
