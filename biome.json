@@ -17,6 +17,9 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "correctness": {
+        "useImportExtensions": "error"
+      },
       "style": {
         "useNodejsImportProtocol": "off"
       }

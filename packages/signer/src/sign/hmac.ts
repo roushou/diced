@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import type { Method } from "../signer";
+import type { Method } from "../signer.ts";
 
 /**
  * Creates an HMAC-SHA256 signature using the provided secret and request details

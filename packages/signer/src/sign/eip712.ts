@@ -1,5 +1,5 @@
 import type { Hex } from "viem";
-import type { ConnectedWalletClient } from "../wallet";
+import type { ConnectedWalletClient } from "../wallet.ts";
 
 /**
  * Signs the canonical Polymarket CLOB EIP-712 authentication message
