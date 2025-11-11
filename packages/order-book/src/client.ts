@@ -57,7 +57,7 @@ export class OrderBookClient extends BaseClient {
     this.book = new BookRequests(this);
     this.trade = new TradeRequests(this);
     this.market = new MarketRequests(this);
-    this.order = new OrderRequests(this);
+    this.order = new OrderRequests(this, this.market);
     this.account = new AccountRequests(this);
   }
 }

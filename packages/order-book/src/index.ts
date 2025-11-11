@@ -29,16 +29,16 @@ export type {
   MarketToken,
   MidpointResponse,
   PriceResponse,
+  TickSize,
 } from "./requests/market.ts";
 export type {
   CancelResponse,
   CreateOrderParams,
   ListOrderParams,
-  Order,
+  OpenOrder,
   OrderResponse,
   OrderSide,
   OrderType,
-  SignedOrder,
 } from "./requests/order.ts";
 export type {
   ListTradesParams,

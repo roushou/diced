@@ -1,5 +1,14 @@
 import type { OrderSide } from "./requests/order.ts";
 
+export function roundTo(
+  num: number,
+  decimals: number,
+  mode: "floor" | "ceil" | "round" = "round",
+): number {
+  const factor = 10 ** decimals;
+  return Math[mode](num * factor) / factor;
+}
+
 /**
  * Convert a price to the contract's raw format
  */

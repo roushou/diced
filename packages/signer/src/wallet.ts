@@ -14,7 +14,7 @@ export function createConnectedWallet({
   privateKey: string;
   chain: SupportedChain;
 }) {
-  const normalized = isHex(privateKey) ? privateKey : `0x${privateKey}`;
+  const normalized = isHex(privateKey) ? privateKey : toHex(privateKey);
   if (normalized.length !== 66) {
     throw new Error(
       "Invalid private key: must be 32 bytes (64 hex characters)",
@@ -22,7 +22,7 @@ export function createConnectedWallet({
   }
 
   return createWalletClient({
-    account: privateKeyToAccount(toHex(normalized)),
+    account: privateKeyToAccount(normalized),
     chain: chain === "polygon" ? polygon : polygonAmoy,
     transport: http(),
   });

@@ -121,6 +121,36 @@ export class MarketRequests {
       timestamp: data.t,
     }));
   }
+
+  /**
+   * Get tick size for a given token
+   */
+  async getTickSize(tokenId: string): Promise<TickSize> {
+    const response = await this.client.request<{ minimum_tick_size: number }>({
+      method: "GET",
+      path: "/tick-size",
+      auth: { kind: "none" },
+      options: {
+        params: { token_id: tokenId },
+      },
+    });
+    return response.minimum_tick_size.toString();
+  }
+
+  /**
+   * Get fee rate bps for a given token
+   */
+  async getFeeRateBps(tokenId: string): Promise<number> {
+    const response = await this.client.request<{ base_fee: number }>({
+      method: "GET",
+      path: "/fee-rate",
+      auth: { kind: "none" },
+      options: {
+        params: { token_id: tokenId },
+      },
+    });
+    return response.base_fee;
+  }
 }
 
 export type Market = {
@@ -132,15 +162,25 @@ export type Market = {
     max_spread: string;
     event_start_date?: string;
     event_end_date?: string;
-    rates?: number[];
+    rates?: number[] | null;
   };
   minimum_order_size: string;
-  minimum_tick_size: string;
+  minimum_tick_size: TickSize;
   description: string;
+  is_50_50_outcome: boolean;
   category?: string;
+  enable_order_book: boolean;
+  archived: boolean;
   end_date_iso?: string;
   game_start_time?: string;
+  fpmm?: string;
+  maker_base_fee: number;
+  image?: string;
+  taker_base_fee: number;
+  notifications_enabled: boolean;
   question?: string;
+  accepting_orders: boolean;
+  accepting_orders_timestamp?: number | null;
   market_slug?: string;
   min_incentive_size?: string;
   max_incentive_spread?: string;
@@ -150,6 +190,7 @@ export type Market = {
   icon?: string;
   neg_risk?: boolean;
   neg_risk_market_id?: string;
+  tags?: string[];
   neg_risk_request_id?: string;
 };
 
@@ -187,3 +228,5 @@ export type MarketPrice = {
   price: number;
   timestamp: number;
 };
+
+export type TickSize = "0.1" | "0.01" | "0.001" | "0.0001" | (string & {});

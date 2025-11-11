@@ -43,7 +43,8 @@ export type ClientConfig = {
 };
 
 export class BaseClient {
-  protected readonly wallet: ConnectedWalletClient;
+  public readonly wallet: ConnectedWalletClient;
+
   protected readonly credentials: Credentials;
   protected readonly debug: boolean;
 
