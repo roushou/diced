@@ -1,5 +1,6 @@
 import { BaseClient, type ClientConfig } from "./base-client.ts";
 import { AccountRequests } from "./requests/account.ts";
+import { AuthRequests } from "./requests/auth.ts";
 import { BookRequests } from "./requests/book.ts";
 import { MarketRequests } from "./requests/market.ts";
 import { OrderRequests } from "./requests/order.ts";
@@ -38,6 +39,8 @@ import { TradeRequests } from "./requests/trade.ts";
  * ```
  */
 export class OrderBookClient extends BaseClient {
+  public readonly auth: AuthRequests;
+
   public readonly book: BookRequests;
 
   public readonly pricing: PricingRequests;
@@ -53,6 +56,7 @@ export class OrderBookClient extends BaseClient {
   constructor(config: ClientConfig) {
     super(config);
 
+    this.auth = new AuthRequests(this);
     this.book = new BookRequests(this);
     this.pricing = new PricingRequests(this);
     this.trade = new TradeRequests(this);
