@@ -20,6 +20,13 @@
         "valibot": "^1.1.0",
       },
     },
+    "examples/create-order": {
+      "name": "@dicedhq/example-create-order",
+      "version": "0.1.0",
+      "dependencies": {
+        "@dicedhq/polymarket": "workspace:*",
+      },
+    },
     "packages/polymarket": {
       "name": "@dicedhq/polymarket",
       "version": "0.1.0",
@@ -49,6 +56,8 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@2.3.4", "", { "os": "win32", "cpu": "arm64" }, "sha512-5TJ6JfVez+yyupJ/iGUici2wzKf0RrSAxJhghQXtAEsc67OIpdwSKAQboemILrwKfHDi5s6mu7mX+VTCTUydkw=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.3.4", "", { "os": "win32", "cpu": "x64" }, "sha512-FGCijXecmC4IedQ0esdYNlMpx0Jxgf4zceCaMu6fkjWyjgn50ZQtMiqZZQ0Q/77yqPxvtkgZAvt5uGw0gAAjig=="],
+
+    "@dicedhq/example-create-order": ["@dicedhq/example-create-order@workspace:examples/create-order"],
 
     "@dicedhq/polymarket": ["@dicedhq/polymarket@workspace:packages/polymarket"],
 
