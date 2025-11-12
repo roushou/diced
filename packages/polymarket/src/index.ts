@@ -49,23 +49,5 @@ export {
 } from "./errors.ts";
 export type { Credentials, HeaderPayload, Method } from "./signer/signer.ts";
 export { Signer } from "./signer/signer.ts";
-export {
-  calculateFees,
-  calculateMidpoint,
-  calculateOrderCost,
-  calculateSpread,
-  calculateSpreadPercent,
-  calculateTotalCost,
-  formatTokenId,
-  getOppositeSide,
-  isValidTickSize,
-  priceToRaw,
-  rawToPrice,
-  rawToSize,
-  roundToTickSize,
-  sizeToRaw,
-  validatePrice,
-  validateSize,
-} from "./utils.ts";
 export type { ConnectedWalletClient, SupportedChain } from "./wallet/wallet.ts";
 export { createConnectedWallet } from "./wallet/wallet.ts";
