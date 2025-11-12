@@ -15,11 +15,6 @@ const DEFAULT_BASE_URL = "https://clob.polymarket.com";
 const DEFAULT_TIMEOUT_MS = 30000;
 const DEFAULT_MAX_RETRIES = 3;
 
-type AuthRequirement =
-  | { kind: "none" }
-  | { kind: "l1"; nonce: number; timestamp?: number }
-  | { kind: "l2"; headerArgs?: unknown };
-
 /**
  * Configuration for the CLOB client
  */
@@ -118,7 +113,10 @@ export class BaseClient {
   }: {
     method: "GET" | "POST" | "DELETE";
     path: `/${string}`;
-    auth: AuthRequirement;
+    auth:
+      | { kind: "none" }
+      | { kind: "l1"; nonce: number; timestamp?: number }
+      | { kind: "l2"; headerArgs?: unknown };
     options?: {
       body?: unknown;
       params?: Record<string, string | number | boolean | undefined>;
