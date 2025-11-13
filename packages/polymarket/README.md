@@ -1,4 +1,4 @@
-# @dicedhqhq/polymarket
+# @dicedhq/polymarket
 
 A TypeScript client for the Polymarket API.
 
@@ -19,7 +19,7 @@ A TypeScript client for the Polymarket API.
 ## Installation
 
 ```bash
-npm install @dicedhqhq/polymarket
+npm install @dicedhq/polymarket
 ```
 
 ## License
