@@ -19,13 +19,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/roushou/dicedhq",
+    "url": "https://github.com/roushou/polys",
     "directory": "packages/polymarket"
   },
   "bugs": {
-    "url": "https://github.com/roushou/dicedhq/issues"
+    "url": "https://github.com/roushou/polys/issues"
   },
-  "homepage": "https://github.com/roushou/dicedhq#readme",
+  "homepage": "https://github.com/roushou/polys#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
